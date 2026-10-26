@@ -1,12 +1,17 @@
 #include <stdio.h>
+#include <stdlib.h>
 
 typedef struct {
-	short int M[3][3];
+	int M[3][3];
 } t_tabuleiro;
 static t_tabuleiro tabuleiro;
 
+t_tabuleiro acessarTabuleiro() {
+	return tabuleiro;
+}
+
 // Zera o tabuleiro por completo
-void limparTabuleiro() {
+void zerarTabuleiro() {
 	int i, j;                                                                                                                                                                                 
     for (i = 0; i < 3; ++i) {                                                                                                                                                                 
         for (j = 0; j < 3; ++j) {                                                                                                                                                             
@@ -16,7 +21,7 @@ void limparTabuleiro() {
 }
 
 // Verifica se é possível jogar na posição desejada pelo jogador
-int verificarJogada(short int x, short int y) {
+int verificarJogada(int x, int y) {
 	if (x < 0 || x > 2 || y < 0 || y > 2)
 		return 0;
 	if (tabuleiro.M[x][y] != 0)
@@ -55,9 +60,9 @@ void desenha() {
 
 // Retorna 0 para não tem, 1 para X e 2 para O
 int temVencedor() {
-	short int somaLinhas = 0, somaColunas = 0;
+	int somaLinhas = 0, somaColunas = 0;
 
-	short int i, j;
+	int i, j;
 
 	// Verificação de linhas e colunas
 	for (i = 0; i < 3; ++i) {
@@ -78,8 +83,8 @@ int temVencedor() {
 	}
 
 	// Verificação das diagonais
-	short int somaDiagonalPrincipal = 0, somaDiagonalSecundaria = 0;
-	short int x, yPrincipal = 0, ySecundaria = 2;
+	int somaDiagonalPrincipal = 0, somaDiagonalSecundaria = 0;
+	int x, yPrincipal = 0, ySecundaria = 2;
 
 	for (x = 0; x < 3; ++x) {
 		somaDiagonalPrincipal += tabuleiro.M[x][yPrincipal];
@@ -97,6 +102,6 @@ int temVencedor() {
 	return 0;
 }
 
-void marcaJogada(short int x, short int y, short int valor) {
+void marcaJogada(int x, int y, int valor) {
 	tabuleiro.M[x][y] = valor;
 }

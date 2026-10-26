@@ -8,9 +8,11 @@
 3 = Socket
 */
 typedef struct {
-	short int tipo;
-	short int valor;
+	int tipo;
+	int valor;
 	char caractere;
 } t_jogador;
+
+void joga(t_jogador jogador);
 
 #endif

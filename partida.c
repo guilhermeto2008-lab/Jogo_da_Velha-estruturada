@@ -4,7 +4,7 @@
 #include "jogadorTeclado.h"
 
 typedef struct {
-	short int rodada;
+	int rodada;
 	t_jogador jogador1;
 	t_jogador jogador2;
 } t_partida;
@@ -18,10 +18,11 @@ void configuraJogadores() {
 	// Jogador 1 sempre será um jogador de teclado
 	partida.jogador1.tipo = 1;
 
-	short int escolhaTipo;
+	// Configura se vai ser jogador x jogador, jogador x IA ou por socket.
+	int escolhaTipo;
 	printf("Digite 1 para o modo jogador contra jogador, 2 para o modo jogador contra IA e 3 para jogador contra jogador online: ");
 	while (partida.jogador2.tipo != 1 && partida.jogador2.tipo != 2 && partida.jogador2.tipo != 3) {
-		scanf("%hd", &escolhaTipo);
+		scanf("%d", &escolhaTipo);
 		switch (escolhaTipo) {
 			case 1:
 				partida.jogador2.tipo = 1;
@@ -38,8 +39,8 @@ void configuraJogadores() {
 		}
 	}
 	
-	char escolhaCaractere;
 	// Configura o caractere dos jogadores
+	char escolhaCaractere;
 	printf("O jogador 1 ficará com qual caractere? Digite 'X' ou 'O': ");
 
 	while (partida.jogador1.caractere != 'X' && partida.jogador2.caractere != 'O') {
@@ -68,7 +69,7 @@ void configuraJogadores() {
 void inicia() {
 	configuraJogadores();
 
-	limparTabuleiro();
+	zerarTabuleiro();
 
 	desenha();
 
@@ -76,16 +77,19 @@ void inicia() {
 }
 
 void rodarPartida() {
-	short int rodada, vencedor;
+	int rodada, vencedor;
+
+	t_jogador jogadorAtual;
 
 	// For das 9 rodadas do jogo
 	for (rodada = 1; rodada <= 9; ++rodada) {
 
 		// Jogada dos jogadores
 		if (rodada % 2 == 1)
-			joga(&partida.jogador1);
+			jogadorAtual = partida.jogador1;
 		else
-			joga(&partida.jogador2);
+			jogadorAtual = partida.jogador2;
+		joga(jogadorAtual);
 
 		// Verifica se alguém ganhou
 		if (rodada >= 5) {
@@ -99,10 +103,10 @@ void rodarPartida() {
 	}
 
 	// Printa o vencedor
-	if (vencedor == 0)
-		puts("Deu velha.");
-	else if (vencedor == 1)
+	if (vencedor == partida.jogador1.valor)
 		printf("O %c venceu.\n", partida.jogador1.caractere);
-	else if (vencedor == 4)
+	else if (vencedor == partida.jogador2.valor)
 		printf("O %c venceu.\n", partida.jogador2.caractere);
+	else
+		puts("Deu velha.");
 }
