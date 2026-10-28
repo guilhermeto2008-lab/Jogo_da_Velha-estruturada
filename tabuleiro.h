@@ -7,9 +7,9 @@ typedef struct {
 
 t_tabuleiro acessarTabuleiro();
 void zerarTabuleiro();
-int verificarJogada(short int x, short int y);
+int verificarJogada(int x, int y);
 void desenha();
 int temVencedor();
-int marcaJogada();
+void marcaJogada(int x, int y, int valor);
 
 #endif

@@ -1,9 +1,6 @@
 #include <stdio.h>
-#include <stdlib.h>
+#include "tabuleiro.h"
 
-typedef struct {
-	int M[3][3];
-} t_tabuleiro;
 static t_tabuleiro tabuleiro;
 
 t_tabuleiro acessarTabuleiro() {

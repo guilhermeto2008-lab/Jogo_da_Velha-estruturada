@@ -217,15 +217,7 @@ void iaJoga(t_jogador jogador) {
 	t_tabuleiro tabuleiro = acessarTabuleiro();
 
 	// Verifica cada uma da regras. Se uma encontrou um ligar para marcar, retorna 1. Se não, retorna 0 e segue para a próxima regra.
-	if (verificaRegra1(jogador.valor, tabuleiro.M))
-		return;
-	if (verificaRegra2(jogador.valor, tabuleiro.M))
-		return;
-	if (verificaRegra3(jogador.valor, tabuleiro.M))
-		return;
-	if (verificaRegra4(jogador.valor, tabuleiro.M))
-		return;
-	if (verificaRegra5(jogador.valor, tabuleiro.M))
+	if (verificaRegra1(jogador.valor, tabuleiro.M) || verificaRegra2(jogador.valor, tabuleiro.M) || verificaRegra3(jogador.valor, tabuleiro.M) || verificaRegra4(jogador.valor, tabuleiro.M) || verificaRegra5(jogador.valor, tabuleiro.M))
 		return;
 	verificaRegra6(jogador.valor, tabuleiro.M);
 }
