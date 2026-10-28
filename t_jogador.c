@@ -23,7 +23,7 @@ void configuraTiposJogadores(t_jogador *jogador1, t_jogador *jogador2) {
 				jogador2->tipo = 3;
 				break;
 			default:
-				printf("O valor digitado não é válido. Tente novamente: ");
+				printf("\nO valor digitado não é válido. Tente novamente: ");
 				break;
 		}
 	}
@@ -50,7 +50,7 @@ void configuraCaracteresJogadores(t_jogador *jogador1, t_jogador *jogador2) {
 				jogador2->valor = 1;
 				break;
 			default:
-				printf("O valor digitado não é válido. Tente novamente: ");
+				printf("\nO valor digitado não é válido. Tente novamente: ");
 				break;
 		}
 	}

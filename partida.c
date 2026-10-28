@@ -6,6 +6,7 @@ typedef struct {
 	int rodada;
 	t_jogador jogador1;
 	t_jogador jogador2;
+	int vencedor;
 } t_partida;
 
 static t_partida partida;
@@ -32,24 +33,28 @@ void inicia() {
 }
 
 void rodarPartida() {
-	int rodada, vencedor;
-
 	t_jogador jogadorAtual;
 
+	partida.vencedor = 0;
 	// For das 9 rodadas do jogo
-	for (rodada = 1; rodada <= 9; ++rodada) {
+	for (partida.rodada = 1; partida.rodada <= 9; ++partida.rodada) {
 
 		// Jogada dos jogadores
-		if (rodada % 2 == 1)
-			jogadorAtual = partida.jogador1;
-		else
-			jogadorAtual = partida.jogador2;
+		switch (partida.rodada % 2) {
+			case 1:
+				jogadorAtual = partida.jogador1;
+				break;
+			case 0:
+				jogadorAtual = partida.jogador2;
+				break;
+		}
 		joga(jogadorAtual);
 
 		// Verifica se alguém ganhou
-		if (rodada >= 5) {
+		if (partida.rodada >= 5) {
 			if (temVencedor()) {
-				vencedor = temVencedor();
+				desenha();
+				partida.vencedor = temVencedor();
 				break;
 			}
 		}
@@ -58,9 +63,9 @@ void rodarPartida() {
 	}
 
 	// Printa o vencedor
-	if (vencedor == partida.jogador1.valor)
+	if (partida.vencedor == partida.jogador1.valor)
 		printf("O %c venceu.\n", partida.jogador1.caractere);
-	else if (vencedor == partida.jogador2.valor)
+	else if (partida.vencedor == partida.jogador2.valor)
 		printf("O %c venceu.\n", partida.jogador2.caractere);
 	else
 		puts("Deu velha.");
