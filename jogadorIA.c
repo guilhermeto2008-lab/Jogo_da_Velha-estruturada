@@ -22,8 +22,8 @@ int auxiliarRegra1(int valorJogador, int valorARevisar) {
 		somaLinha = 0;
 		somaColuna = 0;
 		for (j = 0; j < 3; ++j) {
-			somaLinha += valorPosicao(i, j);
-			somaColuna += valorPosicao(j, i);
+			somaLinha += acessarTabuleiro(i, j);
+			somaColuna += acessarTabuleiro(j, i);
 		}
 
 		if (somaLinha == valorARevisar * 2) {
@@ -60,7 +60,7 @@ int auxiliarRegra1(int valorJogador, int valorARevisar) {
 	// Verifica se alguém vai bater na diagonal principal
 	j = 0;
 	for (i = 0; i < 3; ++i) {
-		somaDiagonalPrincipal += valorPosicao(i, j);
+		somaDiagonalPrincipal += acessarTabuleiro(i, j);
 		++j;
 	}
 	// Se alguém for bater na diagonal principal, marca esse espaço
@@ -77,7 +77,7 @@ int auxiliarRegra1(int valorJogador, int valorARevisar) {
 
 	j = 2;
 	for (i = 0; i < 3; ++i) {
-		somaDiagonalSecundaria += valorPosicao(i, j);
+		somaDiagonalSecundaria += acessarTabuleiro(i, j);
 		--j;
 	}
 	// Se alguém for bater na diagonal principal, marca esse espaço
@@ -127,8 +127,8 @@ int verificaRegra2(int valorJogador) {
 			somaLinha = 0;
 			somaColuna = 0;
 			for (j = 0; j < 3; ++j) {
-				somaLinha += valorPosicao(i, j);
-				somaColuna += valorPosicao(j, i);
+				somaLinha += acessarTabuleiro(i, j);
+				somaColuna += acessarTabuleiro(j, i);
 			}
 
 			// Encontrou uma linha onde apenas ele possui uma marcação
@@ -150,7 +150,7 @@ int verificaRegra2(int valorJogador) {
 
 	j = 0;
 	for (i = 0; i < 3; ++i) {
-		somaDiagonalPrincipal += valorPosicao(i, j);
+		somaDiagonalPrincipal += acessarTabuleiro(i, j);
 		++j;
 	}
 
@@ -171,7 +171,7 @@ int verificaRegra2(int valorJogador) {
 
 	j = 2;
 	for (i = 0; i < 3; ++i) {
-		somaDiagonalSecundaria += valorPosicao(i, j);
+		somaDiagonalSecundaria += acessarTabuleiro(i, j);
 		--j;
 	} 
 
@@ -205,25 +205,25 @@ int verificaRegra4(int valorJogador) {
 	int valorCanto;
 
 	// 1,1 foi marcado, mas 3,3 não
-	valorCanto = valorPosicao(0, 0);
+	valorCanto = acessarTabuleiro(0, 0);
 	if (valorCanto != 0 && valorCanto != valorJogador && verificarJogada(2, 2)) {
 		marcaJogada(2, 2, valorJogador);
 		return 1;
 	}
 	// 1,3 foi marcado, mas 3,1 não
-	valorCanto = valorPosicao(0, 2);
+	valorCanto = acessarTabuleiro(0, 2);
 	if (valorCanto != 0 && valorCanto != valorJogador && verificarJogada(2, 0)) {
 		marcaJogada(2, 0, valorJogador);
 		return 1;
 	}
 	// 3,1 foi marcado, mas 1,3 não
-	valorCanto = valorPosicao(2, 0);
+	valorCanto = acessarTabuleiro(2, 0);
 	if (valorCanto != 0 && valorCanto != valorJogador && verificarJogada(0, 2)) {
 		marcaJogada(0, 2, valorJogador);
 		return 1;
 	}
 	// 3,3 foi marcado, mas 1,1 não
-	valorCanto = valorPosicao(2, 2);
+	valorCanto = acessarTabuleiro(2, 2);
 	if (valorCanto != 0 && valorCanto != valorJogador && verificarJogada(0, 0)) {
 		marcaJogada(0, 0, valorJogador);
 		return 1;

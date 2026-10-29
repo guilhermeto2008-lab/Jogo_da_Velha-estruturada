@@ -25,7 +25,7 @@ void configuraTabuleiro() {
     }	
 }
 
-int valorPosicao(int i, int j) {
+int acessarTabuleiro(int i, int j) {
 	return tabuleiro.M[i][j];
 }
 

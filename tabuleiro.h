@@ -2,7 +2,7 @@
 #define TABULEIRO_H
 
 void configuraTabuleiro();
-int valorPosicao(int i, int j);
+int acessarTabuleiro(int i, int j);
 int verificarJogada(int i, int j);
 void desenha();
 int temVencedor();
