@@ -1,10 +1,16 @@
+/****
+* Implementação do módulo: jogadorIA.c
+* Autor: Caio Rodrigues Silva
+* Data de Criação: 23/10/2026
+* Última alteração: 28/10/2026
+* Descrição Geral: Fornece toda a infraestrutura para decisão de jogadas da IA.
+****/
+
 #include <stdio.h>
-#include <stdlib.h>
 #include "t_jogador.h"
 #include "tabuleiro.h"
 
-// Regras retornam 1 caso tenham marcado, e zero caso não tenham achado uma jogada correta.
-int verificaRegra1(int valorJogador, int matriz[3][3]) {
+int auxiliarRegra1(int valorJogador, int valorARevisar, int matriz[3][3]) {
 	int i, j, somaLinha, somaColuna, linhaParaMarcar=-1, colunaParaMarcar=-1;
 
 	// Verifica linhas e colunas que estão com duas marcações
@@ -20,10 +26,10 @@ int verificaRegra1(int valorJogador, int matriz[3][3]) {
 			somaColuna += matriz[j][i];
 		}
 
-		if (somaLinha == 2 || somaLinha == 8) {
+		if (somaLinha == valorARevisar * 2) {
 			linhaParaMarcar = i;
 			break;
-		} else if (somaColuna == 2 || somaColuna == 8) {
+		} else if (somaColuna == valorARevisar * 2) {
 			colunaParaMarcar = i;
 			break;
 		}
@@ -31,9 +37,9 @@ int verificaRegra1(int valorJogador, int matriz[3][3]) {
 
 	// Se achou uma linha que já tem duas marcações
 	if (linhaParaMarcar != -1) {
-		for (colunaParaMarcar = 0; colunaParaMarcar < 3; ++colunaParaMarcar) {
-			if (matriz[linhaParaMarcar][colunaParaMarcar] == 0) {
-				marcaJogada(linhaParaMarcar, colunaParaMarcar, valorJogador);
+		for (j = 0; j < 3; ++j) {
+			if (verificarJogada(linhaParaMarcar, j)) {
+				marcaJogada(linhaParaMarcar, j, valorJogador);
 				return 1;
 			}
 		}
@@ -41,15 +47,15 @@ int verificaRegra1(int valorJogador, int matriz[3][3]) {
 
 	// Se achou uma coluna que já tem duas marcações
 	if (colunaParaMarcar != -1) {
-		for (linhaParaMarcar = 0; linhaParaMarcar < 3; ++linhaParaMarcar) {
-			if (matriz[linhaParaMarcar][colunaParaMarcar] == 0) {
-				marcaJogada(linhaParaMarcar, colunaParaMarcar, valorJogador);
+		for (i = 0; i < 3; ++i) {
+			if (verificarJogada(i, colunaParaMarcar)) {
+				marcaJogada(i, colunaParaMarcar, valorJogador);
 				return 1;
 			}
 		}
 	}
 
-	int somaDiagonalPrincipal, somaDiagonalSecundaria;
+	int somaDiagonalPrincipal=0, somaDiagonalSecundaria=0;
 
 	// Verifica se alguém vai bater na diagonal principal
 	j = 0;
@@ -58,39 +64,55 @@ int verificaRegra1(int valorJogador, int matriz[3][3]) {
 		++j;
 	}
 	// Se alguém for bater na diagonal principal, marca esse espaço
-	if (somaDiagonalPrincipal == 2 || somaDiagonalPrincipal == 8) {
+	if (somaDiagonalPrincipal == valorARevisar * 2) {
 		j = 0;
 		for (i = 0; i < 3; ++i) {
-			if (matriz[i][j] == 0) {
+			if (verificarJogada(i, j)) {
 				marcaJogada(i, j, valorJogador);
 				return 1;
-
-			++j;
 			}
+		++j;
 		}
 	}
-	
 
-	//Verifica se alguém vai bater na diagonal secundária
 	j = 2;
 	for (i = 0; i < 3; ++i) {
 		somaDiagonalSecundaria += matriz[i][j];
 		--j;
 	}
-	// Se alguém for bater na diagonal secundária, marca esse espaço
-	if (somaDiagonalSecundaria == 2 || somaDiagonalSecundaria == 8) {
+	// Se alguém for bater na diagonal principal, marca esse espaço
+	if (somaDiagonalSecundaria == valorARevisar * 2) {
 		j = 2;
 		for (i = 0; i < 3; ++i) {
-			if (matriz[i][j] == 0) {
+			if (verificarJogada(i, j)) {
 				marcaJogada(i, j, valorJogador);
 				return 1;
 			}
-
-			--j;
+		--j;
 		}
 	}
 
-	// Não achou nenhum caso válido para marcar
+	return 0;
+}
+
+// Regras retornam 1 caso tenham marcado, e zero caso não tenham achado uma jogada correta.
+int verificaRegra1(int valorJogador, int matriz[3][3]) {
+	int adversario;
+
+	switch (valorJogador) {
+		case 1:
+			adversario = 4;
+			break;
+		case 4:
+			adversario = 1;
+			break;
+	}
+
+	if (auxiliarRegra1(valorJogador, valorJogador, matriz))
+		return 1;
+	else if (auxiliarRegra1(valorJogador, adversario, matriz))
+		return 1;
+
 	return 0;
 }
 
@@ -110,10 +132,10 @@ int verificaRegra2(int valorJogador, int matriz[3][3]) {
 			}
 
 			// Encontrou uma linha onde apenas ele possui uma marcação
-			if (somaLinha == valorJogador && possivelLinha != -1)
+			if (somaLinha == valorJogador && possivelLinha == -1)
 				possivelLinha = i;
 			// Encontrou uma coluna onde apenas ele possui uma marcação
-			if (somaColuna == valorJogador && possivelColuna != -1)
+			if (somaColuna == valorJogador && possivelColuna == -1)
 				possivelColuna = i;
 		}
 	}

@@ -1,3 +1,12 @@
+/****
+* Implementação do módulo: t_jogador.c
+* Autor: Caio Rodrigues Silva
+* Data de Criação: 23/10/2026
+* Última alteração: 27/10/2026
+* Descrição Geral: Intermediário entre a partida e os diversos tipos de jogadores.
+				Oferece todas as operações referentes a jogadores sem necessidade de conhecimento do partida.c
+****/
+
 #include <stdio.h>
 #include "t_jogador.h"
 #include "jogadorTeclado.h"

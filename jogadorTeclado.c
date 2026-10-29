@@ -1,3 +1,11 @@
+/****
+* Implementação do módulo: jogadorTeclado.c
+* Autor: Caio Rodrigues Silva
+* Data de Criação: 21/10/2026
+* Última alteração: 23/10/2026
+* Descrição Geral: Interface entre o jogador do teclado e o sistema. Escreve no tabuleiro o valor determinado pelo jogador.
+****/
+
 #include <stdio.h>
 #include "t_jogador.h"
 #include "tabuleiro.h"

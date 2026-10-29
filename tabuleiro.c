@@ -1,3 +1,12 @@
+/****
+* Implementação do módulo: tabuleiro.c
+* Autor: Caio Rodrigues Silva
+* Data de Criação: 21/10/2026
+* Última alteração: 27/10/2026
+* Descrição Geral: Guarda o tabuleiro e suas operações envolvidas. Tabuleiro é um struct que guarda a matriz M.
+				1 é a representação de 'O' e 4 é a representação de 'X'.
+****/
+
 #include <stdio.h>
 #include "tabuleiro.h"
 
@@ -8,7 +17,7 @@ t_tabuleiro acessarTabuleiro() {
 }
 
 // Zera o tabuleiro por completo
-void zerarTabuleiro() {
+void configuraTabuleiro() {
 	int i, j;                                                                                                                                                                                 
     for (i = 0; i < 3; ++i) {                                                                                                                                                                 
         for (j = 0; j < 3; ++j) {                                                                                                                                                             

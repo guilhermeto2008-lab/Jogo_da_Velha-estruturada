@@ -6,7 +6,7 @@ typedef struct {
 } t_tabuleiro;
 
 t_tabuleiro acessarTabuleiro();
-void zerarTabuleiro();
+void configuraTabuleiro();
 int verificarJogada(int x, int y);
 void desenha();
 int temVencedor();

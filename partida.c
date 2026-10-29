@@ -1,3 +1,11 @@
+/****
+* Implementação do módulo: partida.c
+* Autor: Caio Rodrigues Silva
+* Data de Criação: 21/10/2026
+* Última alteração: 27/10/2026
+* Descrição Geral: Administrador da inicialização e sequência de rodadas.
+****/
+
 #include <stdio.h>
 #include "tabuleiro.h"
 #include "t_jogador.h"
@@ -23,7 +31,7 @@ void configuraJogadores() {
 
 // Determina o caractere de cada jogador e imprime na tela o tabuleiro
 void inicia() {
-	zerarTabuleiro();
+	configuraTabuleiro();
 
 	configuraJogadores();
 

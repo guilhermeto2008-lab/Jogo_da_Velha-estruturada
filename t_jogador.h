@@ -2,12 +2,6 @@
 #define JOGADOR_H
 
 typedef struct {
-	/*
-		Tipos:
-	1 = jogador real
-	2 = IA
-	3 = Socket
-	*/
 	int tipo;
 	int valor;
 	char caractere;
