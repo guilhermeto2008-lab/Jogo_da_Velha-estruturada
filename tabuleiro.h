@@ -1,13 +1,9 @@
 #ifndef TABULEIRO_H
 #define TABULEIRO_H
 
-typedef struct {
-	int M[3][3];
-} t_tabuleiro;
-
-t_tabuleiro acessarTabuleiro();
 void configuraTabuleiro();
-int verificarJogada(int x, int y);
+int valorPosicao(int i, int j);
+int verificarJogada(int i, int j);
 void desenha();
 int temVencedor();
 void marcaJogada(int x, int y, int valor);

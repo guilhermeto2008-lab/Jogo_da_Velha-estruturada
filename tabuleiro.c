@@ -8,13 +8,12 @@
 ****/
 
 #include <stdio.h>
-#include "tabuleiro.h"
+
+typedef struct {
+	int M[3][3];
+} t_tabuleiro;
 
 static t_tabuleiro tabuleiro;
-
-t_tabuleiro acessarTabuleiro() {
-	return tabuleiro;
-}
 
 // Zera o tabuleiro por completo
 void configuraTabuleiro() {
@@ -26,11 +25,15 @@ void configuraTabuleiro() {
     }	
 }
 
+int valorPosicao(int i, int j) {
+	return tabuleiro.M[i][j];
+}
+
 // Verifica se é possível jogar na posição desejada pelo jogador
-int verificarJogada(int x, int y) {
-	if (x < 0 || x > 2 || y < 0 || y > 2)
+int verificarJogada(int i, int j) {
+	if (i < 0 || i > 2 || j < 0 || j > 2)
 		return 0;
-	if (tabuleiro.M[x][y] != 0)
+	if (tabuleiro.M[i][j] != 0)
 		return 0;
 	return 1;
 }
@@ -108,6 +111,6 @@ int temVencedor() {
 	return 0;
 }
 
-void marcaJogada(int x, int y, int valor) {
-	tabuleiro.M[x][y] = valor;
+void marcaJogada(int i, int j, int valor) {
+	tabuleiro.M[i][j] = valor;
 }
