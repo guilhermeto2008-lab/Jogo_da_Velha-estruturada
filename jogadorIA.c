@@ -191,9 +191,9 @@ int verificaRegra2(int valorJogador, int matriz[3][3]) {
 	return 0;
 }
 
-int verificaRegra3(int valorJogador, int matriz[3][3]) {
+int verificaRegra3(int valorJogador) {
 	// Espaço central está vazio
-	if (matriz[1][1] == 0) {
+	if (verificarJogada(1, 1)) {
 		marcaJogada(1, 1, valorJogador);
 		return 1;
 	}
@@ -203,23 +203,23 @@ int verificaRegra3(int valorJogador, int matriz[3][3]) {
 
 int verificaRegra4(int valorJogador, int matriz[3][3]) {
 	// 1,1 foi marcado, mas 3,3 não
-	if (matriz[0][0] != 0 && matriz[0][0] != valorJogador && matriz[2][2] == 0) {
+	if (matriz[0][0] != 0 && matriz[0][0] != valorJogador && verificarJogada(2, 2)) {
 		marcaJogada(2, 2, valorJogador);
 		return 1;
 	}
-	// 3,3 foi marcado, mas 1,1 não
-	if (matriz[2][2] != 0 && matriz[2][2] != valorJogador && matriz[0][0] == 0) {
-		marcaJogada(0, 0, valorJogador);
-		return 1;
-	}
 	// 1,3 foi marcado, mas 3,1 não
-	if (matriz[0][2] != 0 && matriz[0][2] != valorJogador && matriz[2][0] == 0) {
+	if (matriz[0][2] != 0 && matriz[0][2] != valorJogador && verificarJogada(2, 0)) {
 		marcaJogada(2, 0, valorJogador);
 		return 1;
 	}
 	// 3,1 foi marcado, mas 1,3 não
-	if (matriz[2][0] != 0 && matriz[2][0] != valorJogador && matriz[0][2] == 0) {
+	if (matriz[2][0] != 0 && matriz[2][0] != valorJogador && verificarJogada(0, 2)) {
 		marcaJogada(0, 2, valorJogador);
+		return 1;
+	}
+	// 3,3 foi marcado, mas 1,1 não
+	if (matriz[2][2] != 0 && matriz[2][2] != valorJogador && verificarJogada(0, 0)) {
+		marcaJogada(0, 0, valorJogador);
 		return 1;
 	}
 
@@ -227,21 +227,21 @@ int verificaRegra4(int valorJogador, int matriz[3][3]) {
 	return 0;
 }
 
-int verificaRegra5(int valorJogador, int matriz[3][3]) {
-	if (matriz[0][0] == 0) {
+int verificaRegra5(int valorJogador) {
+	if (verificarJogada(0, 0)) {
 		marcaJogada(0, 0, valorJogador);
 		return 1;
 	}
-	if (matriz[0][2] == 0) {
+	if (verificarJogada(0, 2)) {
 		marcaJogada(0, 2, valorJogador);
 		return 1;
 	}
-	if (matriz[2][0] == 0) {
-		marcaJogada(0, 2, valorJogador);
+	if (verificarJogada(2, 0)) {
+		marcaJogada(2, 0, valorJogador);
 		return 1;
 	}
-	if (matriz[2][2] == 0) {
-		marcaJogada(0, 2, valorJogador);
+	if (verificarJogada(2, 2)) {
+		marcaJogada(2, 2, valorJogador);
 		return 1;
 	}
 
@@ -249,12 +249,12 @@ int verificaRegra5(int valorJogador, int matriz[3][3]) {
 	return 0;
 }
 
-void verificaRegra6(int valorJogador, int matriz[3][3]) {
+void verificaRegra6(int valorJogador) {
 	int i, j;
 
 	for (i = 0; i < 3; ++i) {
 		for (j = 0; j < 3; ++j) {
-			if (matriz[i][j] == 0) {
+			if (verificarJogada(i, j)) {
 				marcaJogada(i, j, valorJogador);
 				return;
 			}
@@ -266,7 +266,7 @@ void iaJoga(t_jogador jogador) {
 	t_tabuleiro tabuleiro = acessarTabuleiro();
 
 	// Verifica cada uma da regras. Se uma encontrou um ligar para marcar, retorna 1. Se não, retorna 0 e segue para a próxima regra.
-	if (verificaRegra1(jogador.valor, tabuleiro.M) || verificaRegra2(jogador.valor, tabuleiro.M) || verificaRegra3(jogador.valor, tabuleiro.M) || verificaRegra4(jogador.valor, tabuleiro.M) || verificaRegra5(jogador.valor, tabuleiro.M))
+	if (verificaRegra1(jogador.valor, tabuleiro.M) || verificaRegra2(jogador.valor, tabuleiro.M) || verificaRegra3(jogador.valor) || verificaRegra4(jogador.valor, tabuleiro.M) || verificaRegra5(jogador.valor))
 		return;
-	verificaRegra6(jogador.valor, tabuleiro.M);
+	verificaRegra6(jogador.valor);
 }
