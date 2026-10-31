@@ -8,37 +8,28 @@
 ****/
 
 #include <stdio.h>
-
-typedef struct {
-	int M[3][3];
-} t_tabuleiro;
-
-static t_tabuleiro tabuleiro;
+#include "tabuleiro.h"
 
 // Zera o tabuleiro por completo
-void configuraTabuleiro() {
+void configuraTabuleiro(t_tabuleiro *tabuleiro) {
 	int i, j;                                                                                                                                                                                 
     for (i = 0; i < 3; ++i) {                                                                                                                                                                 
         for (j = 0; j < 3; ++j) {                                                                                                                                                             
-            tabuleiro.M[i][j] = 0;
+            tabuleiro->M[i][j] = 0;
         }                                                                                                                                                                                     
-    }	
-}
-
-int acessarTabuleiro(int i, int j) {
-	return tabuleiro.M[i][j];
+    }
 }
 
 // Verifica se é possível jogar na posição desejada pelo jogador
-int verificarJogada(int i, int j) {
+int verificarJogada(t_tabuleiro *tabuleiro, int i, int j) {
 	if (i < 0 || i > 2 || j < 0 || j > 2)
 		return 0;
-	if (tabuleiro.M[i][j] != 0)
+	if (tabuleiro->M[i][j] != 0)
 		return 0;
 	return 1;
 }
 
-void desenha() {
+void desenha(t_tabuleiro *tabuleiro) {
 	printf("\033[2J\033[H");
 	int i, j;
 	char caractere;
@@ -47,9 +38,9 @@ void desenha() {
 		printf(" ");
 		for (j = 0; j < 3; ++j) {
 			// Traduz de valores para caracteres X e O
-			if (tabuleiro.M[i][j] == 0)
+			if (tabuleiro->M[i][j] == 0)
 				caractere = ' ';
-			else if (tabuleiro.M[i][j] == 1)
+			else if (tabuleiro->M[i][j] == 1)
 				caractere = 'O';
 			else
 				caractere = 'X';
@@ -68,7 +59,7 @@ void desenha() {
 }
 
 // Retorna 0 para não tem, 1 para X e 2 para O
-int temVencedor() {
+int temVencedor(t_tabuleiro *tabuleiro) {
 	int somaLinhas = 0, somaColunas = 0;
 
 	int i, j;
@@ -76,8 +67,8 @@ int temVencedor() {
 	// Verificação de linhas e colunas
 	for (i = 0; i < 3; ++i) {
 		for (j = 0; j < 3; ++j) {
-			somaLinhas += tabuleiro.M[i][j];
-			somaColunas += tabuleiro.M[j][i];
+			somaLinhas += tabuleiro->M[i][j];
+			somaColunas += tabuleiro->M[j][i];
 
 			// Se for a última soma de linha/coluna verifica se tem vencedor daquela linha/coluna
 			if (j == 2) {
@@ -96,8 +87,8 @@ int temVencedor() {
 	int x, yPrincipal = 0, ySecundaria = 2;
 
 	for (x = 0; x < 3; ++x) {
-		somaDiagonalPrincipal += tabuleiro.M[x][yPrincipal];
-		somaDiagonalSecundaria += tabuleiro.M[x][ySecundaria];
+		somaDiagonalPrincipal += tabuleiro->M[x][yPrincipal];
+		somaDiagonalSecundaria += tabuleiro->M[x][ySecundaria];
 
 		++yPrincipal;
 		--ySecundaria;
@@ -111,6 +102,10 @@ int temVencedor() {
 	return 0;
 }
 
-void marcaJogada(int i, int j, int valor) {
-	tabuleiro.M[i][j] = valor;
+int acessarTabuleiro(t_tabuleiro *tabuleiro, int i, int j) {
+	return tabuleiro->M[i][j];
+}
+
+void marcaJogada(t_tabuleiro *tabuleiro, int i, int j, int valor) {
+	tabuleiro->M[i][j] = valor;
 }

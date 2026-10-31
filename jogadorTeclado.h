@@ -2,6 +2,6 @@
 #define JOGADORTECLADO_H
 #include "t_jogador.h"
 
-void tecladoJoga(t_jogador jogador);
+void tecladoJoga(t_jogador *jogador);
 
 #endif

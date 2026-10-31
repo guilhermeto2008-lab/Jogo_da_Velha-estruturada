@@ -12,7 +12,10 @@
 #include "jogadorTeclado.h"
 #include "jogadorIA.h"
 
-void configuraTiposJogadores(t_jogador *jogador1, t_jogador *jogador2) {
+void configuraTiposJogadores(t_jogador *jogador1, t_jogador *jogador2, t_tabuleiro *tabuleiro) {
+	jogador1->copiaTabuleiro = tabuleiro;
+	jogador2->copiaTabuleiro = tabuleiro;
+	
 	// Jogador 1 sempre será um jogador de teclado
 	jogador1->tipo = 1;
 
@@ -66,9 +69,9 @@ void configuraCaracteresJogadores(t_jogador *jogador1, t_jogador *jogador2) {
 }
 
 
-void joga(t_jogador jogador) {
-	if (jogador.tipo == 1)
+void joga(t_jogador *jogador) {
+	if (jogador->tipo == 1)
 		tecladoJoga(jogador);
-	else if (jogador.tipo == 2)
+	else if (jogador->tipo == 2)
 		iaJoga(jogador);
 }
