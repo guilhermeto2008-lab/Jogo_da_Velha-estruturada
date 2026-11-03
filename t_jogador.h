@@ -23,7 +23,7 @@ typedef struct {
 	t_tabuleiro *copiaTabuleiro;
 	int servidor_fd;
 	int cliente_fd;
-	char buffer[TAM_BUFFER];
+	int buffer[TAM_BUFFER];
 } t_jogadorRemoto;
 
 #endif

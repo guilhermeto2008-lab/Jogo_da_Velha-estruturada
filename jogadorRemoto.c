@@ -17,6 +17,7 @@ void configuraJogadoresRemotos(t_jogadorRemoto *jogador, t_tabuleiro *tabuleiro)
 	printf("Digite 1 para hostear o jogo e 2 para se conectar a outro jogo: ");
 	while (jogador->valor == 0) {
 		scanf("%d", &escolhaTipo);
+        printf("\033[2J\033[H");
 		switch (escolhaTipo) {
 			case 1:
 				jogador->ehHost = 1;
@@ -122,6 +123,7 @@ void conecta(t_jogadorRemoto *jogador) {
         printf("Digite 1 para usar loopback e 2 para se conectar a outro dispositivo: ");
         while (escolhaEndereco == 0) {
             scanf("%d", &escolhaEndereco);
+            printf("\033[2J\033[H");
 
             switch (escolhaEndereco) {
                 case 1:
@@ -153,21 +155,18 @@ void conecta(t_jogadorRemoto *jogador) {
 }
 
 void enviaJogada(t_jogadorRemoto *jogador, int x, int y, int valor) {
-    // É determinado por "x y v", x e y são as coordenadas, e v é o valor
-    jogador->buffer[0] = x + '0';
-    jogador->buffer[1] = ' ';
-    jogador->buffer[2] = y + '0';
-    jogador->buffer[3] = ' ';
-    jogador->buffer[4] = valor + '0';
-    jogador->buffer[5] = '\0';
+    // É determinado por {x, y, v}, x e y são as coordenadas, e v é o valor
+    jogador->buffer[0] = x;
+    jogador->buffer[1] = y;
+    jogador->buffer[2] = valor;
 
-    send(jogador->cliente_fd, jogador->buffer, strlen(jogador->buffer) + 1, 0);
+    send(jogador->cliente_fd, jogador->buffer, sizeof(int) * TAM_BUFFER, 0);
 }
 
 // Jogador recebe algo do tipo "1 1 4" e interpreta
-void recebeJogada(t_jogadorRemoto *jogador) {
-    memset(jogador->buffer, 0, TAM_BUFFER);
-    int bytes = recv(jogador->cliente_fd, jogador->buffer, TAM_BUFFER, 0);
+int recebeJogada(t_jogadorRemoto *jogador) {
+    memset(jogador->buffer, 0, sizeof(jogador->buffer));
+    int bytes = recv(jogador->cliente_fd, jogador->buffer, sizeof(int) * TAM_BUFFER, 0);
 
     if (bytes <= 0) {
             printf("O outro usuário se desconectou.\n");
@@ -175,12 +174,13 @@ void recebeJogada(t_jogadorRemoto *jogador) {
             close(jogador->cliente_fd);
             if (jogador->ehHost)
                 close(jogador->servidor_fd);
+
+            return 0;
     }
 
-    int x, y, valor;
-    // É determinado por "x y v", x e y são as coordenadas, e v é o valor
-    x = jogador->buffer[0] - '0';
-    y = jogador->buffer[2] - '0';
-    valor = jogador->buffer[4] - '0';
-    marcaJogada(jogador->copiaTabuleiro, x, y, valor);
+    else
+    // É determinado por {x, y, v}, x e y são as coordenadas, e v é o valor
+    marcaJogada(jogador->copiaTabuleiro, jogador->buffer[0], jogador->buffer[1], jogador->buffer[2]);
+
+    return 1;
 }

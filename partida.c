@@ -167,6 +167,7 @@ void iniciaRemoto() {
 }
 
 void rodarPartidaRemota(t_partidaRemota *partida) {
+	int conectado = 1;
 	for (partida->rodada = 1; partida->rodada <= 9; ++partida->rodada) {
 		desenha(&partida->tabuleiro);
 		printf("Você é o %c.\n", partida->jogador.caractere);
@@ -192,10 +193,13 @@ void rodarPartidaRemota(t_partidaRemota *partida) {
 					break;
 				case 0:
 					printf("Vez do adversário.\n");
-					recebeJogada(&partida->jogador);
+					conectado = recebeJogada(&partida->jogador);
 					break;
 			}
 		}
+
+		if (conectado == 0)
+			break;
 
 		// Verifica se alguém ganhou
 		if (partida->rodada >= 5) {
@@ -207,18 +211,19 @@ void rodarPartidaRemota(t_partidaRemota *partida) {
 		}
 	}
 
-	desenha(&partida->tabuleiro);
-
 	// Encerra conexão
 	close(partida->jogador.cliente_fd);
 	if (partida->jogador.ehHost)
 		close(partida->jogador.servidor_fd);
 
 	// Printa o vencedor
-	if (partida->vencedor == partida->jogador.valor)
-		puts("Você venceu.");
-	else if (partida->vencedor == 0)
-		puts("Deu velha.");
-	else
-		puts("Seu adversário venceu.");
+	if (conectado) {
+		desenha(&partida->tabuleiro);
+		if (partida->vencedor == partida->jogador.valor)
+			puts("Você venceu.");
+		else if (partida->vencedor == 0)
+			puts("Deu velha.");
+		else
+			puts("Seu adversário venceu.");
+	}
 }
