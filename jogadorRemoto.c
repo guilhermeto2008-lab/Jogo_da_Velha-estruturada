@@ -116,7 +116,29 @@ void conecta(t_jogadorRemoto *jogador) {
         servidor.sin_family = AF_INET;
         servidor.sin_port = htons(PORTA);
 
-        if (inet_pton(AF_INET, "127.0.0.1", &servidor.sin_addr) <= 0) {
+        int escolhaEndereco=0;
+        char endereco[16] = "127.0.0.1";
+
+        printf("Digite 1 para usar loopback e 2 para se conectar a outro dispositivo: ");
+        while (escolhaEndereco == 0) {
+            scanf("%d", &escolhaEndereco);
+
+            switch (escolhaEndereco) {
+                case 1:
+                    break;
+                case 2:
+                    printf("Digite o endereço a que deseja se conectar: ");
+                    getchar();
+                    fgets(endereco, 16, stdin);
+                    endereco[strcspn(endereco, "\n")] = '\0';
+                    break;
+                default:
+                    printf("Valor inválido. Digite novamente: ");
+                    break;
+            }
+        }
+
+        if (inet_pton(AF_INET, endereco, &servidor.sin_addr) <= 0) {
             perror("Endereco invalido");
             close(jogador->cliente_fd);
             exit(EXIT_FAILURE);

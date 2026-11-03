@@ -20,7 +20,7 @@ void rodarPartidaLocal(t_partidaLocal *partida);
 char decidirTipoPartida() {
 	int escolhaTipo;
 	printf("Digite 1 para escolher jogo local, ou 2 para escolher jogo remoto: ");
-	while (true) {
+	while (1) {
 		scanf(" %d", &escolhaTipo);
 		switch (escolhaTipo) {
 			case 1:
@@ -200,12 +200,14 @@ void rodarPartidaRemota(t_partidaRemota *partida) {
 		// Verifica se alguém ganhou
 		if (partida->rodada >= 5) {
 			partida->vencedor = temVencedor(&partida->tabuleiro);
+
 			if (partida->vencedor) {
-				desenha(&partida->tabuleiro);
 				break;
 			}
 		}
 	}
+
+	desenha(&partida->tabuleiro);
 
 	// Encerra conexão
 	close(partida->jogador.cliente_fd);
