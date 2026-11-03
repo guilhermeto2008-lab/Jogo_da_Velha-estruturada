@@ -42,7 +42,7 @@ void desenha(t_tabuleiro *tabuleiro) {
 				caractere = ' ';
 			else if (tabuleiro->M[i][j] == 1)
 				caractere = 'O';
-			else
+			else if (tabuleiro->M[i][j] == 4)
 				caractere = 'X';
 
 			// Printa os valores da linha

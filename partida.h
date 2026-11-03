@@ -3,6 +3,7 @@
 
 #include "tabuleiro.h"
 #include "t_jogador.h"
+#include "jogadorRemoto.h"
 
 typedef struct {
 	t_tabuleiro tabuleiro;
@@ -15,8 +16,7 @@ typedef struct {
 typedef struct {
 	t_tabuleiro tabuleiro;
 	int rodada;
-	t_jogadorRemoto jogador1;
-	t_jogadorRemoto jogador2;
+	t_jogadorRemoto jogador;
 	int vencedor;
 } t_partidaRemota;
 

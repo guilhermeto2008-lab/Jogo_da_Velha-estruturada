@@ -7,13 +7,15 @@
 ****/
 
 #include <stdio.h>
+#include <unistd.h>
 #include "partida.h"
 #include "tabuleiro.h"
 #include "t_jogador.h"
+#include "jogadorTeclado.h"
+#include "jogadorIA.h"
 #include "jogadorRemoto.h"
 
 void rodarPartidaLocal(t_partidaLocal *partida);
-void rodarPartidaRemota(t_partidaRemota *partida);
 
 char decidirTipoPartida() {
 	int escolhaTipo;
@@ -36,10 +38,59 @@ char decidirTipoPartida() {
 
 // Decide quem fica com qual símbolo e qual jogador começa
 void configuraJogadores(t_partidaLocal *partida) {
+	partida->jogador1.copiaTabuleiro = &partida->tabuleiro;
+	partida->jogador2.copiaTabuleiro = &partida->tabuleiro;
+	
+	// Jogador 1 sempre será um jogador de teclado
+	partida->jogador1.tipo = 1;
+	partida->jogador2.tipo = 0;
+
+	// Configura se vai ser jogador x jogador, jogador x IA ou por socket.
+	int escolhaTipo;
+	printf("Digite 1 para o modo jogador contra jogador e 2 para o modo jogador contra IA: ");
+	while (partida->jogador2.tipo == 0) {
+		scanf("%d", &escolhaTipo);
+		switch (escolhaTipo) {
+			case 1:
+				partida->jogador2.tipo = 1;
+				break;
+			case 2:
+				partida->jogador2.tipo = 2;
+				break;
+			default:
+				printf("\nO valor digitado não é válido. Tente novamente: ");
+				break;
+		}
+	}
+
 	printf("\033[2J\033[H");
-	configuraTiposJogadores(&partida->jogador1, &partida->jogador2, &partida->tabuleiro);
+
+	// Configura o caractere dos jogadores
+	char escolhaCaractere;
+	printf("O jogador 1 ficará com qual caractere? Digite 'X' ou 'O': ");
+
+	while (partida->jogador1.caractere != 'X' && partida->jogador2.caractere != 'O') {
+		scanf(" %c", &escolhaCaractere);
+		switch (escolhaCaractere) {
+			case 'O':
+				partida->jogador1.caractere = 'O';
+				partida->jogador1.valor = 1;
+				partida->jogador2.caractere = 'X';
+				partida->jogador2.valor = 4;
+				break;
+			case 'X':
+				partida->jogador1.caractere = 'X';
+				partida->jogador1.valor = 4;
+				partida->jogador2.caractere = 'O';
+				partida->jogador2.valor = 1;
+				break;
+			default:
+				printf("\nO valor digitado não é válido. Tente novamente: ");
+				break;
+		}
+	}
+
 	printf("\033[2J\033[H");
-	configuraCaracteresJogadores(&partida->jogador1, &partida->jogador2);
 }
 
 // Determina o caractere de cada jogador e imprime na tela o tabuleiro
@@ -56,7 +107,7 @@ void iniciaLocal() {
 }
 
 void rodarPartidaLocal(t_partidaLocal *partida) {
-	t_jogador jogadorAtual;
+	t_jogador *jogadorAtual;
 
 	partida->vencedor = 0;
 	// For das 9 rodadas do jogo
@@ -65,13 +116,16 @@ void rodarPartidaLocal(t_partidaLocal *partida) {
 		// Jogada dos jogadores
 		switch (partida->rodada % 2) {
 			case 1:
-				jogadorAtual = partida->jogador1;
+				jogadorAtual = &partida->jogador1;
 				break;
 			case 0:
-				jogadorAtual = partida->jogador2;
+				jogadorAtual = &partida->jogador2;
 				break;
 		}
-		joga(&jogadorAtual);
+		if (jogadorAtual->tipo == 1)
+		tecladoJoga(jogadorAtual);
+	else if (jogadorAtual->tipo == 2)
+		iaJoga(jogadorAtual);
 
 		// Verifica se alguém ganhou
 		if (partida->rodada >= 5) {
@@ -98,47 +152,71 @@ void rodarPartidaLocal(t_partidaLocal *partida) {
  Bloco partida remota
 ********************/
 
-void rodarPartidaHost(t_partidaRemota *partida);
-void rodarPartidaClient(t_partidaRemota *partida);
+void rodarPartidaRemota(t_partidaRemota *partida);
 
 void iniciaRemoto() {
 	t_partidaRemota partida;
 
 	configuraTabuleiro(&partida.tabuleiro);
 
-	configuraJogadoresRemotos(&partida.jogador1, &partida.jogador2, &partida.tabuleiro);
+	configuraJogadoresRemotos(&partida.jogador, &partida.tabuleiro);
 
-	if (ehHost(&partida.jogador1))
-		hostAccept(&partida.jogador1);
-	else
-		clientConecta(&partida.jogador1);
+	conecta(&partida.jogador);
 
-	desenha(&partida.tabuleiro);
-
-	if (ehHost(&partida.jogador1))
-		rodarPartidaHost(&partida);
-	else
-		rodarPartidaClient(&partida);
+	rodarPartidaRemota(&partida);
 }
 
-void rodarPartidaHost(t_partidaRemota *partida) {
-	t_jogadorRemoto jogadorAtual;
-
-	partida->vencedor = 0;
+void rodarPartidaRemota(t_partidaRemota *partida) {
 	for (partida->rodada = 1; partida->rodada <= 9; ++partida->rodada) {
-		// Alterna entre as rodadas de cada jogador
-		switch(partida->rodada % 2) {
-			case 0:
-				jogadorAtual = partida->jogador1;
-				break;
-			case 1:
-				jogadorAtual = partida->jogador2;
-				break;
+		desenha(&partida->tabuleiro);
+		printf("Você é o %c.\n", partida->jogador.caractere);
+
+		// Host joga nos pares
+		if (partida->jogador.ehHost) {
+			switch(partida->rodada % 2) {
+				case 0:
+					remotoJoga(&partida->jogador);
+					break;
+				case 1:
+					printf("Vez do adversário.\n");
+					recebeJogada(&partida->jogador);
+					break;
+			}
 		}
-		jogaRemoto(&jogadorAtual);
+
+		// Client joga nos ímpares
+		else {
+			switch(partida->rodada % 2) {
+				case 1:
+					remotoJoga(&partida->jogador);
+					break;
+				case 0:
+					printf("Vez do adversário.\n");
+					recebeJogada(&partida->jogador);
+					break;
+			}
+		}
+
+		// Verifica se alguém ganhou
+		if (partida->rodada >= 5) {
+			partida->vencedor = temVencedor(&partida->tabuleiro);
+			if (partida->vencedor) {
+				desenha(&partida->tabuleiro);
+				break;
+			}
+		}
 	}
-}
 
-void rodarPartidaClient(t_partidaRemota *partida) {
+	// Encerra conexão
+	close(partida->jogador.cliente_fd);
+	if (partida->jogador.ehHost)
+		close(partida->jogador.servidor_fd);
 
+	// Printa o vencedor
+	if (partida->vencedor == partida->jogador.valor)
+		puts("Você venceu.");
+	else if (partida->vencedor == 0)
+		puts("Deu velha.");
+	else
+		puts("Seu adversário venceu.");
 }
